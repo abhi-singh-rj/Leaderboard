@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug Hunters Leaderboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Add MDI Icon CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+    <h1>Bug Hunters Leaderboard</h1>
+</header>
+
+<div class="container">
+
+    <h2>🏆 Top 4 Players</h2>
+    <div id="topPlayers" class="leaderboard"></div>
+
+    <!-- Filters Section moved just before the leaderboard table -->
+    <div class="filters-container">
+        <input type="text" id="search-bar" placeholder="Search by Name..." oninput="filterLeaderboard()">
+        <select id="location-filter" onchange="filterLeaderboard()">
+            <option value="">Select location</option>
+            <option value="California">California</option>
+            <option value="Texas">Texas</option>
+            <option value="Florida">Florida</option>
+            <option value="New York">New York</option>
+            <option value="Illinois">Illinois</option>
+        </select>
+        <select id="program-filter" onchange="filterLeaderboard()">
+            <option value="">Select Program</option>
+            <option value="Bug Hunters">Bug Hunters</option>
+            <option value="Chrome">Chrome</option>
+            <option value="Android">Android</option>
+        </select>
+        <select id="time-filter" onchange="filterLeaderboard()">
+            <option value="">Select Time Range</option>
+            <option value="all-time">All Time</option>
+            <option value="last-week">Last Week</option>
+            <option value="last-month">Last Month</option>
+        </select>
+        <button onclick="filterLeaderboard()">Search</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th onclick="sortTable()">Rank ↑↓</th>
+                <th>Player</th>
+                <th>Location</th>
+                <th>Score</th>
+                <th>Points</th> <!-- Added Points column -->
+                <th>Percentage</th>
+            </tr>
+        </thead>
+        <tbody id="leaderboardTable"></tbody>
+    </table>
+
+    <div class="pagination">
+        <button onclick="prevPage()">⬅ Prev</button>
+        <span id="pageNumber">Page 1</span>
+        <button onclick="nextPage()">Next ➡</button>
+    </div>
+
+    <!-- Chart Button with MDI icon -->
+    <button class="chart-btn" onclick="showChart()">
+        <i class="mdi mdi-chart-bar"></i> 
+    </button>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
