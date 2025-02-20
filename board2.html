@@ -1,100 +1,260 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>Platform Leaderboard - Last 90 Days</title>
-    <meta name="description" content="Our global Last 90 Days platform leaderboard, featuring top researchers and their achievements.">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard for Researchers</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
     <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        body {
+            display: flex;
         }
-        th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background: skyblue;
+            color: black;
+            padding: 15px;
+            position: fixed;
+        }
+        .content {
+            margin-left: 260px;
+            padding: 20px;
+            width: 100%;
+        }
+        .card {
+            background: gainsboro;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .navbar {
+            background: gainsboro;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .top-rankers {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .top-card {
+            flex: 1;
+            text-align: center;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .leaderboard-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .sortable th {
             cursor: pointer;
         }
-        th {
-            background-color: #f2f2f2;
+        .sortable th i {
+            margin-left: 5px;
         }
-        .increase::after {
-            content: " ↑";
-            color: green;
-        }
-        .decrease::after {
-            content: " ↓";
-            color: red;
+        .search-box {
+            margin-bottom: 15px;
         }
     </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <h2>Com Olho</h2>
+        <ul class="nav flex-column">
+            <li class="nav-item"><a href="#" class="nav-link text-white"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li class="nav-item"><a href="#" class="nav-link text-white"><i class="fas fa-trophy"></i> Leaderboard</a></li>
+            <li class="nav-item"><a href="#" class="nav-link text-white"><i class="fas fa-chart-bar"></i> Charts</a></li>
+            
+        </ul>
+    </nav>
+    <div class="content">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Leaderboard for Researchers</a>
+            </div>
+        </nav>
+        <div class="top-rankers">
+            <div class="top-card">
+                <img src="https://randomuser.me/api/portraits/women/1.jpg" class="leaderboard-img" alt="Alice Johnson">
+                <h3>1st - Alice Johnson</h3>
+                <p>Score: 98</p>
+                <p>Points: 5000</p>
+                <p>Percentile: 99%</p>
+            </div>
+            <div class="top-card">
+                <img src="https://randomuser.me/api/portraits/men/2.jpg" class="leaderboard-img" alt="Bob Smith">
+                <h3>2nd - Bob Smith</h3>
+                <p>Score: 95</p>
+                <p>Points: 4800</p>
+                <p>Percentile: 97%</p>
+            </div>
+            <div class="top-card">
+                <img src="https://randomuser.me/api/portraits/men/3.jpg" class="leaderboard-img" alt="Charlie Brown">
+                <h3>3rd - Charlie Brown</h3>
+                <p>Score: 92</p>
+                <p>Points: 4600</p>
+                <p>Percentile: 95%</p>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <div class="card p-3">
+                    <h5>All Researchers</h5>
+                    <!-- Search Input -->
+                    <input type="text" id="search-input" class="form-control search-box" placeholder="Search by username..." onkeyup="filterTable()">
+                    <table class="table table-striped sortable">
+                        <thead>
+                            <tr>
+                                <th onclick="sortTable(0)">Rank <i id="rank-icon" class="fas fa-sort"></i></th>
+                                <th onclick="sortTable(1)">Name <i id="name-icon" class="fas fa-sort"></i></th>
+                                <th onclick="sortTable(2)">Score <i id="score-icon" class="fas fa-sort"></i></th>
+                                <th onclick="sortTable(3)">Percentile <i id="percentile-icon" class="fas fa-sort"></i></th>
+                                <th onclick="sortTable(4)">Points <i id="points-icon" class="fas fa-sort"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-body">
+                            <!-- Table rows here -->
+                            <tr>
+                                <td>1</td>
+                                <td><img src="https://randomuser.me/api/portraits/women/1.jpg" class="leaderboard-img" alt="Alice Johnson"> Alice Johnson</td>
+                                <td>98</td>
+                                <td>99%</td>
+                                <td>5000</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><img src="https://randomuser.me/api/portraits/men/2.jpg" class="leaderboard-img" alt="Bob Smith"> Bob Smith</td>
+                                <td>95</td>
+                                <td>97%</td>
+                                <td>4800</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td><img src="https://randomuser.me/api/portraits/men/3.jpg" class="leaderboard-img" alt="Charlie Brown"> Charlie Brown</td>
+                                <td>92</td>
+                                <td>95%</td>
+                                <td>4600</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td><img src="https://randomuser.me/api/portraits/men/4.jpg" class="leaderboard-img" alt="David Wilson"> David Wilson</td>
+                                <td>90</td>
+                                <td>92%</td>
+                                <td>4400</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td><img src="https://randomuser.me/api/portraits/women/5.jpg" class="leaderboard-img" alt="Emma Davis"> Emma Davis</td>
+                                <td>88</td>
+                                <td>90%</td>
+                                <td>4200</td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td><img src="https://randomuser.me/api/portraits/men/6.jpg" class="leaderboard-img" alt="Franklin White"> Franklin White</td>
+                                <td>85</td>
+                                <td>87%</td>
+                                <td>4000</td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td><img src="https://randomuser.me/api/portraits/women/7.jpg" class="leaderboard-img" alt="Grace Lee"> Grace Lee</td>
+                                <td>83</td>
+                                <td>85%</td>
+                                <td>3800</td>
+                            </tr>
+                            <tr>
+                                <td>8</td>
+                                <td><img src="https://randomuser.me/api/portraits/men/8.jpg" class="leaderboard-img" alt="Henry Scott"> Henry Scott</td>
+                                <td>80</td>
+                                <td>82%</td>
+                                <td>3600</td>
+                            </tr>
+                            <tr>
+                                <td>9</td>
+                                <td><img src="https://randomuser.me/api/portraits/women/9.jpg" class="leaderboard-img" alt="Isabella Adams"> Isabella Adams</td>
+                                <td>78</td>
+                                <td>80%</td>
+                                <td>3400</td>
+                            </tr>
+                            <tr>
+                                <td>10</td>
+                                <td><img src="https://randomuser.me/api/portraits/men/10.jpg" class="leaderboard-img" alt="Jack Thompson"> Jack Thompson</td>
+                                <td>75</td>
+                                <td>78%</td>
+                                <td>3200</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
+        let sortDirection = [true, true, true, true, true]; // Track sorting direction for each column
+
         function sortTable(n) {
-            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-            table = document.getElementById("leaderboard");
-            switching = true;
-            dir = "asc"; 
-            while (switching) {
-                switching = false;
-                rows = table.rows;
-                for (i = 1; i < (rows.length - 1); i++) {
-                    shouldSwitch = false;
-                    x = rows[i].getElementsByTagName("TD")[n];
-                    y = rows[i + 1].getElementsByTagName("TD")[n];
-                    if (dir == "asc") {
-                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                            shouldSwitch = true;
-                            break;
-                        }
-                    } else if (dir == "desc") {
-                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-                            shouldSwitch = true;
-                            break;
-                        }
-                    }
+            let table = document.querySelector(".sortable tbody");
+            let rows = Array.from(table.rows);
+            let ascending = sortDirection[n];
+            rows.sort((rowA, rowB) => {
+                let cellA = rowA.cells[n].innerText;
+                let cellB = rowB.cells[n].innerText;
+                if (n === 2 || n === 4) {  // For Score and Points, parse them as integers
+                    cellA = parseInt(cellA);
+                    cellB = parseInt(cellB);
                 }
-                if (shouldSwitch) {
-                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                    switching = true;
-                    switchcount ++;      
+                return ascending ? cellA - cellB : cellB - cellA;
+            });
+            table.innerHTML = "";
+            rows.forEach(row => table.appendChild(row));
+
+            // Toggle sorting direction and update icons
+            sortDirection[n] = !ascending;
+            updateIcons(n, ascending);
+        }
+
+        function updateIcons(columnIndex, ascending) {
+            const icons = document.querySelectorAll("th i");
+            icons.forEach((icon, index) => {
+                icon.classList.remove("fa-sort-up", "fa-sort-down");
+                if (index === columnIndex) {
+                    icon.classList.add(ascending ? "fa-sort-up" : "fa-sort-down");
                 } else {
-                    if (switchcount == 0 && dir == "asc") {
-                        dir = "desc";
-                        switching = true;
+                    icon.classList.add("fa-sort");
+                }
+            });
+        }
+
+        function filterTable() {
+            let input = document.getElementById("search-input");
+            let filter = input.value.toLowerCase();
+            let table = document.getElementById("leaderboard-body");
+            let rows = table.getElementsByTagName("tr");
+            
+            for (let i = 0; i < rows.length; i++) {
+                let cells = rows[i].getElementsByTagName("td");
+                let nameCell = cells[1]; // The "Name" column
+                if (nameCell) {
+                    let username = nameCell.textContent || nameCell.innerText;
+                    if (username.toLowerCase().indexOf(filter) > -1) {
+                        rows[i].style.display = "";
+                    } else {
+                        rows[i].style.display = "none";
                     }
                 }
             }
         }
     </script>
-</head>
-<body>
-    <h2>Leaderboard</h2>
-    <table id="leaderboard">
-        <thead>
-            <tr>
-                <th onclick="sortTable(0)">Rank</th>
-                <th onclick="sortTable(1)">Name</th>
-                <th onclick="sortTable(2)">Hacker Level</th>
-                <th onclick="sortTable(3)">Leadership Score</th>
-                <th onclick="sortTable(4)">Percentage</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td class="increase">1</td>
-                <td>John Doe</td>
-                <td>Expert</td>
-                <td>1200</td>
-                <td>98%</td>
-            </tr>
-            <tr>
-                <td class="decrease">2</td>
-                <td>Jane Smith</td>
-                <td>Advanced</td>
-                <td>1150</td>
-                <td>96%</td>
-            </tr>
-        </tbody>
-    </table>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
